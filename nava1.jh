@@ -1,0 +1,91 @@
+
+
+application {
+  config {
+    baseName booking,
+    applicationType microservice,
+    packageName ir.sgas.nava.plus,
+    authenticationType jwt,
+    prodDatabaseType mysql,
+  }
+   
+}
+
+entity Application{
+appName String
+code String
+}
+
+entity Service{
+serviceProvider String
+serviceId String
+bucketSize Integer
+phoneNimber String
+
+}
+
+relationship ManyToOne {
+	Service{application} to Application
+}
+
+enum ScheduleType{
+FIXED, VARIABLE
+}
+
+entity ServiceAvailability{
+scheduleType ScheduleType
+createDate Instant
+}
+
+
+entity Booked{
+userId String
+userPhoneNumber String
+fromDate LocalDate
+status BookStatus
+}
+
+entity FixedServiceAvailability{ 
+meetingDate LocalDateTime
+bucket Integer 
+deny Boolean 
+calculated Integer
+}
+entity VariableServiceAvailability{
+year Integer
+month Integer
+dayOfMonth Integer 
+dayOfWeek Integer
+bucket Integer
+deny Boolean
+}
+
+
+
+relationship ManyToOne {
+	Booked{service} to Service
+}
+
+enum BookStatus {
+CREATED, CANCELED, TERMINATE , FINISHED 
+}
+
+relationship ManyToOne {
+	Service{application} to Application
+}
+
+relationship ManyToOne {
+	ServiceAvailability{service} to Service
+}
+
+
+paginate Application, Service with pagination
+
+// Use Data Transfer Objects (DTO)
+ dto * with mapstructServices
+
+// Set service options to all except few
+service all with serviceImpl except Service, Application
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
